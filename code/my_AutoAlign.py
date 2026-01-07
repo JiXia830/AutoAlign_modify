@@ -9,7 +9,7 @@ import datetime as dt
 import pickle as cPickle
 from functools import reduce
 import time
-
+from rdflib import URIRef
 import os
 DEVICE = "0"
 os.environ["CUDA_VISIBLE_DEVICES"]=DEVICE
@@ -20,12 +20,14 @@ translations = get_translation_object('example')
 _ = translations.ugettext
 b_ = translations.lgettext
 ### Combine two KG
-dataset_name = 'yago'
-path = 'DY-NB/'
-lgd_filename = '../data/'+path+dataset_name+'.ttl'
-dbp_filename = '../data/'+path+'dbp_'+dataset_name+'.ttl'
-predicate_graph = cPickle.load(open('D:/AutoAlign/data/DY-NB/yago_pred_prox_graph.pickle', 'rb'))
-map_file = '../data/'+path+'mapping_'+dataset_name+'.ttl'
+dataset_name = 'example'
+path = 'MS/'
+lgd_filename = './data/'+path+'model_data'+'.ttl'
+dbp_filename = './data/'+path+'book_data'+'.ttl'
+predicate_graph_name = 'D:\AutoAlign\data\MS\examplebook_pred_prox_graph_matched.pickle'
+predicate_graph = cPickle.load(open(predicate_graph_name, 'rb'))
+# map_file = '../data/'+path+'mapping_'+dataset_name+'.ttl'
+map_file = './data/'+path+'map'+'.ttl'
 aggregation = 'W'
 
 graph = Graph()
@@ -42,7 +44,7 @@ def invert_dict(d):
 entity_label_dict = dict()
 
 for s,p,o in graph:
-    if str(p) == 'http://www.w3.org/2000/01/rdf-schema#label':
+    if str(p) in ['http://example.org/has_label','http://book.org/label']:
         entity_label_dict[s] = str(o)
 
 
@@ -55,182 +57,19 @@ for s,p,o in graph:
 
 
 # YAGO
-if dataset_name == 'yago':
-    intersection_predicates = ['http://www.w3.org/2000/01/rdf-schema#label','http://dbpedia.org/ontology/birthDate','http://yago-knowledge.org/ontology/birthDate','http://xmlns.com/foaf/0.1/gender','http://xmlns.com/foaf/0.1/surname','http://xmlns.com/foaf/0.1/givenName','http://dbpedia.org/ontology/birthYear','http://dbpedia.org/ontology/height','http://dbpedia.org/ontology/Person/height','http://yago-knowledge.org/ontology/birthYear','http://yago-knowledge.org/ontology/height','http://yago-knowledge.org/ontology/Person/height','http://www.w3.org/2003/01/geo/wgs84_pos#long','http://www.w3.org/2003/01/geo/wgs84_pos#lat','http://dbpedia.org/ontology/populationTotal','http://dbpedia.org/ontology/deathDate','http://dbpedia.org/ontology/deathYear','http://dbpedia.org/ontology/alias','http://dbpedia.org/ontology/PopulatedPlace/populationDensity''http://yago-knowledge.org/ontology/populationTotal','http://yago-knowledge.org/ontology/deathDate','http://yago-knowledge.org/ontology/deathYear','http://yago-knowledge.org/ontology/alias','http://yago-knowledge.org/ontology/PopulatedPlace/populationDensity']
-
-
-
-    intersection_predicates_uri = ['http://dbpedia.org/ontology/deathPlace','http://dbpedia.org/ontology/isPartOf','http://yago-knowledge.org/ontology/deathPlace','http://yago-knowledge.org/ontology/isPartOf','http://linkedgeodata.org/ontology/isIn','http://dbpedia.org/ontology/managerClub','http://dbpedia.org/ontology/country','http://yago-knowledge.org/ontology/managerClub','http://yago-knowledge.org/ontology/country','http://linkedgeodata.org/ontology/country','http://dbpedia.org/ontology/team','http://yago-knowledge.org/ontology/team','http://www.w3.org/2003/01/geo/isIn','http://www.w3.org/2003/01/geo/country','http://dbpedia.org/ontology/birthPlace','http://yago-knowledge.org/ontology/birthPlace']
-
-
-elif dataset_name == 'wd':
-    intersection_predicates = ['http://www.wikidata.org/entity/P36',\
-    'http://www.wikidata.org/entity/P185',\
-    'http://www.wikidata.org/entity/P345',\
-    'http://www.wikidata.org/entity/P214',\
-    'http://www.wikidata.org/entity/P40',\
-    'http://www.wikidata.org/entity/P569',\
-    'http://www.wikidata.org/entity/P102',\
-    'http://www.wikidata.org/entity/P175',\
-    'http://www.wikidata.org/entity/P131',\
-    'http://www.wikidata.org/entity/P577',\
-    'http://www.wikidata.org/entity/P140',\
-    'http://www.wikidata.org/entity/P400',\
-    'http://www.wikidata.org/entity/P736',\
-    'http://www.wikidata.org/entity/P1432',\
-    'http://www.wikidata.org/entity/P159',\
-    'http://www.wikidata.org/entity/P136',\
-    'http://www.wikidata.org/entity/P1477',\
-    'http://www.wikidata.org/entity/P227',\
-    'http://www.wikidata.org/entity/P6',\
-    'http://www.wikidata.org/entity/P108',\
-    'http://www.wikidata.org/entity/P585',\
-    'http://www.wikidata.org/entity/P239',\
-    'http://www.wikidata.org/entity/P98',\
-    'http://www.wikidata.org/entity/P54',\
-    'http://www.wikidata.org/entity/P17',\
-    'http://www.wikidata.org/entity/P244',\
-    'http://www.wikidata.org/entity/P238',\
-    'http://www.wikidata.org/entity/P287',\
-    'http://www.wikidata.org/entity/P570',\
-    'http://www.wikidata.org/entity/P176',\
-    'http://www.wikidata.org/entity/P119',\
-    'http://www.wikidata.org/entity/P230',\
-    'http://www.wikidata.org/entity/P50',\
-    'http://www.wikidata.org/entity/P57',\
-    'http://www.wikidata.org/entity/P969',\
-    'http://www.wikidata.org/entity/P20',\
-    'http://www.wikidata.org/entity/P374',\
-    'http://www.wikidata.org/entity/P19',\
-    'http://www.wikidata.org/entity/P84',\
-    'http://www.wikidata.org/entity/P166',\
-    'http://www.wikidata.org/entity/P571',\
-    'http://www.wikidata.org/entity/P184',\
-    'http://www.wikidata.org/entity/P473',\
-    'http://www.wikidata.org/entity/P219',\
-    'http://www.wikidata.org/entity/P170',\
-    'http://www.wikidata.org/entity/P26',\
-    'http://www.wikidata.org/entity/P580',\
-    'http://www.wikidata.org/entity/P1015',\
-    'http://www.wikidata.org/entity/P408',\
-    'http://www.wikidata.org/entity/P172',\
-    'http://www.wikidata.org/entity/P220',\
-    'http://www.wikidata.org/entity/P177',\
-    'http://www.wikidata.org/entity/P178',\
-    'http://www.wikidata.org/entity/P161',\
-    'http://www.wikidata.org/entity/P27',\
-    'http://www.wikidata.org/entity/P742',\
-    'http://www.wikidata.org/entity/P607',\
-    'http://www.wikidata.org/entity/P286',\
-    'http://www.wikidata.org/entity/P361',\
-    'http://www.wikidata.org/entity/P1082',\
-    'http://www.wikidata.org/entity/P344',\
-    'http://www.wikidata.org/entity/P106',\
-    'http://www.wikidata.org/entity/P112',\
-    'http://www.wikidata.org/entity/P1036',\
-    'http://www.wikidata.org/entity/P229',\
-    'http://www.w3.org/2000/01/rdf-schema#label',\
-    'http://www.wikidata.org/entity/P126',\
-    'http://www.wikidata.org/entity/P750',\
-    'http://www.wikidata.org/entity/P144',\
-    'http://www.wikidata.org/entity/P69',\
-    'http://www.wikidata.org/entity/P264',\
-    'http://www.wikidata.org/entity/P218',\
-    'http://www.wikidata.org/entity/P110',\
-    'http://www.wikidata.org/entity/P86',\
-    'http://www.wikidata.org/entity/P957',\
-    'http://www.wikidata.org/entity/P1040',\
-    'http://www.wikidata.org/entity/P200',\
-    'http://www.wikidata.org/entity/P605',\
-    'http://www.wikidata.org/entity/P118',\
-    'http://www.wikidata.org/entity/P127',\
-    'http://dbpedia.org/resource/P36',\
-    'http://dbpedia.org/resource/P185',\
-    'http://dbpedia.org/resource/P345',\
-    'http://dbpedia.org/resource/P214',\
-    'http://dbpedia.org/resource/P40',\
-    'http://dbpedia.org/resource/P569',\
-    'http://dbpedia.org/resource/P102',\
-    'http://dbpedia.org/resource/P175',\
-    'http://dbpedia.org/resource/P131',\
-    'http://dbpedia.org/resource/P577',\
-    'http://dbpedia.org/resource/P140',\
-    'http://dbpedia.org/resource/P400',\
-    'http://dbpedia.org/resource/P736',\
-    'http://dbpedia.org/resource/P1432',\
-    'http://dbpedia.org/resource/P159',\
-    'http://dbpedia.org/resource/P136',\
-    'http://dbpedia.org/resource/P1477',\
-    'http://dbpedia.org/resource/P227',\
-    'http://dbpedia.org/resource/P6',\
-    'http://dbpedia.org/resource/P108',\
-    'http://dbpedia.org/resource/P585',\
-    'http://dbpedia.org/resource/P239',\
-    'http://dbpedia.org/resource/P98',\
-    'http://dbpedia.org/resource/P54',\
-    'http://dbpedia.org/resource/P17',\
-    'http://dbpedia.org/resource/P244',\
-    'http://dbpedia.org/resource/P238',\
-    'http://dbpedia.org/resource/P287',\
-    'http://dbpedia.org/resource/P570',\
-    'http://dbpedia.org/resource/P176',\
-    'http://dbpedia.org/resource/P119',\
-    'http://dbpedia.org/resource/P230',\
-    'http://dbpedia.org/resource/P50',\
-    'http://dbpedia.org/resource/P57',\
-    'http://dbpedia.org/resource/P969',\
-    'http://dbpedia.org/resource/P20',\
-    'http://dbpedia.org/resource/P374',\
-    'http://dbpedia.org/resource/P19',\
-    'http://dbpedia.org/resource/P84',\
-    'http://dbpedia.org/resource/P166',\
-    'http://dbpedia.org/resource/P571',\
-    'http://dbpedia.org/resource/P184',\
-    'http://dbpedia.org/resource/P473',\
-    'http://dbpedia.org/resource/P219',\
-    'http://dbpedia.org/resource/P170',\
-    'http://dbpedia.org/resource/P26',\
-    'http://dbpedia.org/resource/P580',\
-    'http://dbpedia.org/resource/P1015',\
-    'http://dbpedia.org/resource/P408',\
-    'http://dbpedia.org/resource/P172',\
-    'http://dbpedia.org/resource/P220',\
-    'http://dbpedia.org/resource/P177',\
-    'http://dbpedia.org/resource/P178',\
-    'http://dbpedia.org/resource/P161',\
-    'http://dbpedia.org/resource/P27',\
-    'http://dbpedia.org/resource/P742',\
-    'http://dbpedia.org/resource/P607',\
-    'http://dbpedia.org/resource/P286',\
-    'http://dbpedia.org/resource/P361',\
-    'http://dbpedia.org/resource/P1082',\
-    'http://dbpedia.org/resource/P344',\
-    'http://dbpedia.org/resource/P106',\
-    'http://dbpedia.org/resource/P112',\
-    'http://dbpedia.org/resource/P1036',\
-    'http://dbpedia.org/resource/P229',\
-    'http://dbpedia.org/resource/P126',\
-    'http://dbpedia.org/resource/P750',\
-    'http://dbpedia.org/resource/P144',\
-    'http://dbpedia.org/resource/P69',\
-    'http://dbpedia.org/resource/P264',\
-    'http://dbpedia.org/resource/P218',\
-    'http://dbpedia.org/resource/P110',\
-    'http://dbpedia.org/resource/P86',\
-    'http://dbpedia.org/resource/P957',\
-    'http://dbpedia.org/resource/P1040',\
-    'http://dbpedia.org/resource/P200',\
-    'http://dbpedia.org/resource/P605',\
-    'http://dbpedia.org/resource/P118',\
-    'http://dbpedia.org/resource/P127']
-
-    intersection_predicates_uri = intersection_predicates
+intersection_predicates = ['http://example.org/has_name','http://example.org/has_label',\
+                           'http://example.org/has_value','ttp://book.org/label',\
+                            'http://example.org/describle','http://book.org/context',\
+                            'http://book.org/purpose','http://book.org/purpose','http://book.org/label_context','http://book.org/constrainted']
+intersection_predicates_uri = ['http://example.org/Part_Structure','http://example.org/Structural_Self-Analysis',\
+                               'http://example.org/Structural_Function','http://example.org/Structural_Constraint',\
+                                'http://example.org/Structural_Instruction','http://example.org/Instruction_Parameter','http://book.org/purpose']                           
 
 def clean_pred(o):
     if dataset_name in o:
         o = dataset_name + '-' + o.split('/')[-1] 
-    elif 'dbpedia' in o:
-        o = 'dbp-' + o.split('/')[-1]
+    elif 'book' in o:
+        o = 'book-' + o.split('/')[-1]
     else:
         o = o.split('/')[-1]
     
@@ -246,7 +85,7 @@ import rdflib
 import re
 import collections
 
-literal_len = 10
+literal_len = 30
 
 def dataType(string):
     odp='string'
@@ -280,9 +119,10 @@ def getRDFData(o):
         if data_type == 'positiveinteger' or data_type == 'int' or data_type == 'nonnegativeinteger':
             data_type = 'integer'
     return o, data_type
-    
+
 
 def getRDFData_predicate(s, o):
+    o = URIRef(o)
     if isinstance(o, rdflib.term.URIRef):
         data_type = "uri"
     else:
@@ -302,7 +142,7 @@ def getRDFData_predicate(s, o):
     if dataset_name in o:
         o = dataset_name + '-' + o.split('/')[-1]
     else:
-        o = 'dbp-' + o.split('/')[-1]
+        o = 'book-' + o.split('/')[-1]
     return o, data_type
 
 def getLiteralArray(o, literal_len, char_vocab):
@@ -363,13 +203,13 @@ for s, p, o in graph:
     ## all vocab for finding neg sample
     if entity_literal_vocab.get(s[0]) == None:
         entity_literal_vocab[s[0]] = len(entity_literal_vocab)
-        if str(s[0]).startswith('http://dbpedia.org/resource/'):
+        if str(s[0]).startswith('http://book.org/'):
             entity_literal_dbp_vocab_neg.append(s[0])
         else:
             entity_literal_lgd_vocab_neg.append(s[0])
     if entity_literal_vocab.get(o[0]) == None:
         entity_literal_vocab[o[0]] = len(entity_literal_vocab)
-        if str(s[0]).startswith('http://dbpedia.org/resource/'):
+        if str(s[0]).startswith('http://book.org/'):
             entity_literal_dbp_vocab_neg.append(o[0])
         else:
             entity_literal_lgd_vocab_neg.append(o[0])
@@ -377,7 +217,7 @@ for s, p, o in graph:
     if entity_vocab.get(s[0]) == None:
         idx = len(entity_vocab)
         entity_vocab[s[0]] = idx
-        if str(s[0]).startswith('http://dbpedia.org/resource/'):
+        if str(s[0]).startswith('http://book.org/'):
             entity_dbp_vocab.append(idx)
             entity_dbp_vocab_neg.append(s[0])
         else:
@@ -387,7 +227,7 @@ for s, p, o in graph:
     if o[1] == 'uri':
         if entity_vocab.get(o[0]) == None:
             entity_vocab[o[0]] = len(entity_vocab)
-            if str(s[0]).startswith('http://dbpedia.org/resource/'):
+            if str(s[0]).startswith('http://book.org/'):
                 entity_dbp_vocab_neg.append(o[0])
             else:
                 entity_lgd_vocab_neg.append(o[0])
@@ -408,7 +248,7 @@ for s, p, o in graph:
 
                       if entity_vocab.get(o1[0]) == None:
                           entity_vocab[o1[0]] = len(entity_vocab)
-                      if str(s1[0]).startswith('http://dbpedia.org/resource/'):
+                      if str(s1[0]).startswith('http://book.org/'):
                           entity_dbp_vocab_neg.append(o1[0])
                       else:
                           entity_lgd_vocab_neg.append(o1[0])
@@ -416,7 +256,7 @@ for s, p, o in graph:
                           entity_vocab[o1[1]] = len(entity_vocab)
                       if predicate_vocab.get(p1[0]) == None:
                           predicate_vocab[p1[0]] = len(predicate_vocab)
-                      if p[0] != p1[0]                           and len(set(clean_pred(x) for x in (graph.predicates(s[0]))).intersection(set(intersection_predicates_uri))) != 0:
+                      if p[0] != p1[0] and len(set(clean_pred(x) for x in (graph.predicates(s[0]))).intersection(set(intersection_predicates_uri))) != 0:
                           if isinstance(o1[0], rdflib.term.URIRef) and str(p1[0]) in intersection_predicates_uri:
                               data_uri_trans.append([[entity_vocab[s[0]], predicate_vocab[p[0]], entity_vocab[o1[0]], predicate_vocab[p1[0]]], getLiteralArray(o1, literal_len, char_vocab)])
                           elif isinstance(o1[0], rdflib.term.Literal) and 'rdf-schema#label' in str(p1[0]):
@@ -489,7 +329,7 @@ for t in  predicate_graph:
         ent_type_vocab[s] = len(ent_type_vocab)
     if o not in ent_type_vocab:
         ent_type_vocab[o] = len(ent_type_vocab)
-    data_predicate.append([[ent_type_vocab[s],predicate_vocab[p],ent_type_vocab[o], 0], [0]*10, [0]])
+    data_predicate.append([[ent_type_vocab[s],predicate_vocab[p],ent_type_vocab[o], 0], [0]*literal_len, [0]])
     
     if predicate_vocab[p] in domain_vocab:
         domain_vocab[predicate_vocab[p]].add(ent_type_vocab[s])
@@ -546,14 +386,14 @@ def getBatch(data, batchSize, current, entityVocab, literal_len, char_vocab):
             rerun = True
             while rerun or negElm[0] == (reverse_entity_vocab[o] and literal_array == chars):
                 if o_type[1] == 'uri':
-                    if str(s).startswith('http://dbpedia.org/resource/'):
+                    if str(s).startswith('http://book.org/'):
                         negElm = entity_dbp_vocab_neg[random.randint(0, len(entity_dbp_vocab_neg)-1)]
                         negElm = reverse_entity_vocab[entity_vocab[negElm]]
                     else:
                         negElm = entity_lgd_vocab_neg[random.randint(0, len(entity_lgd_vocab_neg)-1)]
                         negElm = reverse_entity_vocab[entity_vocab[negElm]]
                 else:
-                    if str(s).startswith('http://dbpedia.org/resource/'):
+                    if str(s).startswith('http://book.org/'):
                         negElm = entity_literal_dbp_vocab_neg[random.randint(0, len(entity_literal_dbp_vocab_neg)-1)]
                         negElm = reverse_entity_literal_vocab[entity_literal_vocab[negElm]]
                     else:
@@ -655,7 +495,7 @@ charSize = len(char_vocab)
 predSize = len(predicate_vocab)
 ppEntSize = len(ent_type_vocab)
 valid_size = 100 #100 entity validation sample
-top_k = 10
+top_k = 5
 
 
 import random
@@ -674,10 +514,11 @@ for line in file_lgd:
         valid_dataset_list.append((o, s))
 #valid_dataset_list = random.sample(valid_dataset_list, valid_size)
 file_lgd.close()
-
+print(valid_dataset_list)
 valid_examples = [entity_vocab[URIRef(k.replace('<','').replace('>',''))] for k,_ in valid_dataset_list] #LGD
 valid_answer = [entity_dbp_vocab.index(entity_vocab[URIRef(k.replace('<','').replace('>',''))]) for _,k in valid_dataset_list] #DBpedia
-
+print(valid_answer)
+print(valid_examples)
 
 from tensorflow.contrib import rnn
 
@@ -745,8 +586,8 @@ with tfgraph.as_default():
         #pp_learning_rate = 0.0001 # LGD/GEO
         pp_learning_rate = 0.0001 # YAGO
         pp_opt_vars_ent = [v for v in tf.trainable_variables() if v.name.startswith("proximity_triple")]
-        #pp_loss = tf.reduce_sum(tf.maximum(pp_pos - pp_neg + 1, 0)) # LGD/GEO
-        pp_loss = tf.reduce_sum(tf.maximum(pp_pos - pp_neg + 10, 0)) # YAGO
+        pp_loss = tf.reduce_sum(tf.maximum(pp_pos - pp_neg + 1, 0)) # LGD/GEO
+        # pp_loss = tf.reduce_sum(tf.maximum(pp_pos - pp_neg + 10, 0)) # YAGO
         pp_optimizer = tf.train.AdamOptimizer(pp_learning_rate).minimize(pp_loss, var_list=pp_opt_vars_ent)
     elif aggregation == 'A':
         # pos_h mapping from domain_vocab, 
@@ -1039,8 +880,7 @@ def run(graph, totalEpoch):
 
 
 start_time = dt.datetime.now()
-run(tfgraph, 800) 
+run(tfgraph, 11) 
 end_time = dt.datetime.now()
 print("Training time took {} seconds to run {} epoch".format((end_time-start_time).total_seconds(), totalEpoch))
-
 

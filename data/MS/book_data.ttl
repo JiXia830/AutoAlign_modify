@@ -1,0 +1,9 @@
+<http://book.org/Z-Type_Angle_Plate> <http://book.org/label> "PRO" .
+<http://book.org/Carrying> <http://book.org/label> "purpose" .
+<http://book.org/Positioning> <http://book.org/label> "purpose" .
+<http://book.org/Protection> <http://book.org/label> "purpose" .
+<http://book.org/Z-Type_Angle_Plate> <http://book.org/label_context> "The part module is used to describe the physical entities that perform specific functions in an engineering system."@eng .
+<http://book.org/Z-Type_Angle_Plate> <http://book.org/purpose> <http://book.org/Carrying> .
+<http://book.org/Z-Type_Angle_Plate> <http://book.org/purpose> <http://book.org/Positioning> .
+<http://book.org/Z-Type_Angle_Plate> <http://book.org/purpose> <http://book.org/Protection> .
+<http://book.org/Z-Type_Angle_Plate> <http://book.org/constrainted> "Fire prevention and smoke prevention"@eng .

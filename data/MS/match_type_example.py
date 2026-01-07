@@ -6,10 +6,10 @@ with open('match.txt', 'r') as f:
         line = line.strip().split(' ')
         align_dict[line[1]] = line[0]
 
-meta_prox_graph = 'example_pred_prox_graph_test'
+meta_prox_graph = 'examplebook_pred_prox_graph'
 aligned_prox_graph = []
 
-with open(f"1.txt", 'r') as f:
+with open(f"labels_p_labelo.txt", 'r') as f:
     for line in f:
         line = line.strip().split('\t')
         if line[0] in align_dict:
