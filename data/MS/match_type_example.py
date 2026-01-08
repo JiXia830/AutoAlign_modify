@@ -1,7 +1,7 @@
 import pickle
 import pdb
 align_dict = {}
-with open('match.txt', 'r') as f:
+with open('./data/MS/match.txt', 'r') as f:
     for line in f:
         line = line.strip().split(' ')
         align_dict[line[1]] = line[0]
@@ -9,7 +9,9 @@ with open('match.txt', 'r') as f:
 meta_prox_graph = 'examplebook_pred_prox_graph'
 aligned_prox_graph = []
 
-with open(f"labels_p_labelo.txt", 'r') as f:
+# with open(f"labels_p_labelo.txt", 'r') as f:
+with open(f"./data/MS/test_graph.txt", 'r') as f:
+    print()
     for line in f:
         line = line.strip().split('\t')
         if line[0] in align_dict:
@@ -23,6 +25,6 @@ with open(f"labels_p_labelo.txt", 'r') as f:
 pickle.dump(aligned_prox_graph, open(f"{meta_prox_graph}_matched.pickle", 'wb'))
 
 
-file = open(f'{meta_prox_graph}_matched.pickle', 'rb')
-info = pickle.load(file)
-print(info)
+# file = open(f'{meta_prox_graph}_matched.pickle', 'rb')
+# info = pickle.load(file)
+# print(info)

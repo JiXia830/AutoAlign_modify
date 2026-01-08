@@ -880,7 +880,7 @@ def run(graph, totalEpoch):
 
 
 start_time = dt.datetime.now()
-run(tfgraph, 11) 
+run(tfgraph, 401) 
 end_time = dt.datetime.now()
 print("Training time took {} seconds to run {} epoch".format((end_time-start_time).total_seconds(), totalEpoch))
 
